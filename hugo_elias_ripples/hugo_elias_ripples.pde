@@ -1,12 +1,19 @@
-float damping = 0.9;
+float damping = .97;
 float[][] buffer1;
 float[][] buffer2;
 
+import ddf.minim.*;
+Minim minim;
+AudioInput in;
+
+
 void setup(){
   size(400,400);
-  colorMode(HSB,255);
   buffer1 = new float[400][400];
   buffer2 = new float[400][400];
+  colorMode(HSB,100);
+   minim = new Minim(this);
+ in = minim.getLineIn();
 }
 
 void draw(){
@@ -18,6 +25,7 @@ void draw(){
 
 void update(){
   //for every non-edge element:
+    buffer1[200][200] = in.left.get(0)*512;
   for(int x = 1; x < 400-3; x++){
     for(int y = 1; y < 400-3; y++){
       
@@ -29,15 +37,14 @@ void update(){
       buffer2[x][y] *= damping;
     }
   }
-  
-}
+  }
 
 //Display Buffer2
 void display(){
   loadPixels();
   for(int x = 0; x < width; x++){
     for(int y = 0; y < height; y++){
-      pixels[y + x*width] = color((map(buffer2[x][y]*10,-512,512,0,255)));
+      pixels[y + x*width] = color((map(buffer2[x][y]*10,-512,512,0,100)),100,100);
     }
   }
   updatePixels();

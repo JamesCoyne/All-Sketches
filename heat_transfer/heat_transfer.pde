@@ -1,60 +1,68 @@
 float[][] buffer1;
 float[][] buffer2;
-
+int s =799;
 void setup(){
   size(400,400);
   colorMode(HSB,400);
-  buffer1 = new float[400][400];
-  buffer2 = new float[400][400];
-     for(int x = 1; x < width-1; x++){
-        for(int y = 1; y < height-1; y++){
-    //buffer1[x][y] = round(random(0,4000));
+  pixelDensity(displayDensity());
+  buffer1 = new float[width*2][width*2];
+  buffer2 = new float[width*2][width*2];
+      for(int x = 0; x < 800; x++){
+        for(int y = 0; y < 800; y++){
+    //buffer1[x][y] = round(random(0,5555));
         }
       }
+      for(int x = 400; x < 500; x++){
+        for(int y = 0; y < 800; y++){
+    //buffer1[x][y] = random(5555,9999);
+        }
+      }
+      
+      //buffer1[40][399] = 400000000;
 }
-
+int time = 1;
 void draw(){
-  if(frameCount%400 == 0)buffer1[round(random(0,399))][round(random(0,399))] = frameCount*(frameCount);
+  if(mousePressed) {
+    buffer1[mouseY*2][mouseX*2] = time;
+  time+= 1600;
+}
+  //buffer1[400][400] = 999999999;
   update();
   display();
   swap();
-  
-  //fill(0);
-  //rect(mouseX,mouseY,100,-15);
-  //fill(400);
-  //text(buffer2[mouseX][mouseY],mouseX,mouseY);
+  //saveFrame();
 }
 
 void update(){
-  for(int x = 0; x < 400; x++){
-    for(int y = 0; y < 400; y++){
+  for(int x = 0; x < height*2; x++){
+    for(int y = 0; y < width*2; y++){
       
        float sum = 0;
        int count = 0;
        
        if(x > 0 ){
-       if(buffer1[x][y] <= buffer1[x - 1][y]){
+       if(buffer1[x][y] < buffer1[x - 1][y]){
          sum += buffer1[x - 1][y];
          count++;
          }
        }
        
        if(y > 0){
-         if(buffer1[x][y] <= buffer1[x][y-1]){
+         if(buffer1[x][y] < buffer1[x][y-1]){
            sum += buffer1[x][y-1];
            count++;
          }
        }
        
-       if(x < 400-1){
-         if(buffer1[x][y] <= buffer1[x+1][y]){
+       if(x < s){
+         if(buffer1[x][y] < buffer1[x+1][y]){
          sum += buffer1[x+1][y];
          count++;
          }
        }
        
-       if(y < 400-1){
-         if(buffer1[x][y] <= buffer1[x][y+1]){
+       if(y < s){
+         if(buffer1[x][y] < buffer1[x][y+1]){
            sum+= buffer1[x][y+1];
            count++;
          }
@@ -65,17 +73,17 @@ void update(){
            count++;
        }
        
-       if(x > 0 && y < 400-1){
+       if(x > 0 && y < s){
          sum+= buffer1[x-1][y+1];
            count++;
        }
        
-       if(x < 400-1 && y > 0){
+       if(x < s && y > 0){
          sum+= buffer1[x+1][y-1];
            count++;
        }
        
-       if(x < 400-1 && y < 400-1){
+       if(x < s && y < s){
          sum+= buffer1[x+1][y+1];
            count++;
        }
@@ -93,9 +101,9 @@ void update(){
 //Display Buffer2
 void display(){
   loadPixels();
-  for(int x = 0; x < width; x++){
-    for(int y = 0; y < height; y++){
-      pixels[y + x*width] = color(buffer2[x][y]%400,400,400);
+  for(int x = 0; x < width*2; x++){
+    for(int y = 0; y < height*2; y++){
+      pixels[y + x*width*2] = color(buffer2[x][y]%400,400,400);
     }
   }
   updatePixels();
@@ -118,8 +126,4 @@ void mouseController(){
       }
     }
   }
-}
-
-void keyPressed(){
-  println(frameCount);
 }
